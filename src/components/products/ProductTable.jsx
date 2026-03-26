@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
+import AdjustStockModal from "./AdjustStockModal";
 
 const ProductTable = ({ products, deleteProduct, handleEdit }) => {
+
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <div className="product-table-container">
       <table className="product-table">
@@ -41,15 +46,10 @@ const ProductTable = ({ products, deleteProduct, handleEdit }) => {
               }
 
               return (
-                <tr
-                  key={product._id}
-                  
-                >
+                <tr key={product._id}>
                   <td>{product.name}</td>
                   <td>{product.sku || "-"}</td>
                   <td>{product.category}</td>
-
-                  {/* ✅ FIX HERE */}
                   <td>{product.supplierName || "-"}</td>
                   <td>{product.supplierEmail || "-"}</td>
                   <td>{product.quantity}</td>
@@ -75,6 +75,17 @@ const ProductTable = ({ products, deleteProduct, handleEdit }) => {
                     >
                       Delete
                     </button>
+
+                    {/* 🔥 NEW BUTTON */}
+                    <button
+                      className="adjust-btn"
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setShowModal(true);
+                      }}
+                    >
+                      Adjust Stock
+                    </button>
                   </td>
                 </tr>
               );
@@ -82,6 +93,15 @@ const ProductTable = ({ products, deleteProduct, handleEdit }) => {
           )}
         </tbody>
       </table>
+
+      {/* 🔥 MODAL */}
+      {showModal && selectedProduct && (
+        <AdjustStockModal
+          product={selectedProduct}
+          onClose={() => setShowModal(false)}
+          onSuccess={() => window.location.reload()}
+        />
+      )}
     </div>
   );
 };
